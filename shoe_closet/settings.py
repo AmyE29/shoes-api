@@ -11,6 +11,13 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
 import os
+import environ
+
+env =environ.Env(
+    DEBUG=(bool, False)
+)
+# # reading .env files
+environ.Env.read_env()
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -20,12 +27,11 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'xz@s5m97u803)(ib!*uehiqhh$pybedp!l2tn%hr4-rpr&ykoa'
-
+SECRET_KEY = env('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = env.bool('DEBUG')
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = tuple(env.list('ALLOWED_HOSTS'))
 
 
 # Application definition
@@ -44,11 +50,13 @@ INSTALLED_APPS = [
 
     #3rd party apps
     'rest_framework',
+    'corsheaders',
 
     
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -150,3 +158,7 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.TokenAuthentication'
     ],
 }
+
+CORS_ORIGIN_WHITELIST = [
+    "http://localhost:3000",
+]
